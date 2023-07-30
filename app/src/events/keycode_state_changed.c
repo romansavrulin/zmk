@@ -35,9 +35,9 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
 
     zmk_keycode_event_registry_item_t *event = NULL;
     SYS_SLIST_FOR_EACH_CONTAINER(&active_events_registry, event, node) {
-        if( event->keycode == encoded ) {
+        if(event->keycode == encoded) {
             event_found = true;
-            if( pressed )
+            if(pressed)
                 event->event_count++;
             else if (event->event_count > 0){
                 event->event_count--;
@@ -55,7 +55,7 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         k_free(event);
     }
 
-    if ( !event_found ){
+    if (!event_found){
         event = k_malloc(sizeof(zmk_keycode_event_registry_item_t));
         memset (event, 0, sizeof(zmk_keycode_event_registry_item_t));
         event->keycode = encoded;
@@ -64,15 +64,14 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         event_found = false;
     }
 
-    if(event_found && !event_exhausted)
-        return NULL;
+    if(!event_found || event_exhausted) // send only first and last event 
 
-
-    return new_zmk_keycode_state_changed(
-        (struct zmk_keycode_state_changed){.usage_page = page,
-                                           .keycode = id,
-                                           .implicit_modifiers = implicit_modifiers,
-                                           .explicit_modifiers = explicit_modifiers,
-                                           .state = pressed,
-                                           .timestamp = timestamp});
+        return new_zmk_keycode_state_changed(
+            (struct zmk_keycode_state_changed){.usage_page = page,
+                                               .keycode = id,
+                                               .implicit_modifiers = implicit_modifiers,
+                                               .explicit_modifiers = explicit_modifiers,
+                                               .state = pressed,
+                                               .timestamp = timestamp}); 
+    return NULL;
 }
