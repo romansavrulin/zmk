@@ -64,7 +64,7 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         event_found = false;
     }
 
-    if(!event_found || event_exhausted) // send only first and last event 
+    if(!event_found || event_exhausted) // send only first and last event
 
         return new_zmk_keycode_state_changed(
             (struct zmk_keycode_state_changed){.usage_page = page,
@@ -72,6 +72,6 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
                                                .implicit_modifiers = implicit_modifiers,
                                                .explicit_modifiers = explicit_modifiers,
                                                .state = pressed,
-                                               .timestamp = timestamp}); 
+                                               .timestamp = timestamp});
     return NULL;
 }
