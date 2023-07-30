@@ -19,6 +19,10 @@ extern struct zmk_event_subscription __event_subscriptions_end[];
 
 int zmk_event_manager_handle_from(zmk_event_t *event, uint8_t start_index) {
     int ret = 0;
+
+    if(!event)
+        goto release;
+
     uint8_t len = __event_subscriptions_end - __event_subscriptions_start;
     for (int i = start_index; i < len; i++) {
         struct zmk_event_subscription *ev_sub = __event_subscriptions_start + i;
