@@ -35,35 +35,35 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
 
     zmk_keycode_event_registry_item_t *event = NULL;
     SYS_SLIST_FOR_EACH_CONTAINER(&active_events_registry, event, node) {
-        if(event->keycode == encoded) {
+        if (event->keycode == encoded) {
             event_found = true;
-            if(pressed)
+            if (pressed)
                 event->event_count++;
-            else if (event->event_count > 0){
+            else if (event->event_count > 0) {
                 event->event_count--;
             }
 
-            if(event->event_count == 0)
+            if (event->event_count == 0)
                 event_exhausted = true;
 
             break;
         }
     }
 
-    if(event_exhausted){
+    if (event_exhausted) {
         sys_slist_find_and_remove(&active_events_registry, &event->node);
         k_free(event);
     }
 
-    if (!event_found){
+    if (!event_found) {
         event = k_malloc(sizeof(zmk_keycode_event_registry_item_t));
-        memset (event, 0, sizeof(zmk_keycode_event_registry_item_t));
+        memset(event, 0, sizeof(zmk_keycode_event_registry_item_t));
         event->keycode = encoded;
         event->event_count = 1;
         sys_slist_append(&active_events_registry, &event->node);
     }
 
-    if(!event_found || event_exhausted) // send only first keypress and last release event of the same keycode
+    if (!event_found || event_exhausted) // send only first keypress and last release event of the same keycode
 
         return new_zmk_keycode_state_changed(
             (struct zmk_keycode_state_changed){.usage_page = page,
