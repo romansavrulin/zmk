@@ -61,10 +61,9 @@ zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t t
         event->keycode = encoded;
         event->event_count = 1;
         sys_slist_append(&active_events_registry, &event->node);
-        event_found = false;
     }
 
-    if(!event_found || event_exhausted) // send only first and last event
+    if(!event_found || event_exhausted) // send only first keypress and last release event of the same keycode
 
         return new_zmk_keycode_state_changed(
             (struct zmk_keycode_state_changed){.usage_page = page,
