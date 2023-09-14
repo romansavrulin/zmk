@@ -19,30 +19,13 @@ struct zmk_keycode_state_changed {
     int64_t timestamp;
 };
 
+typedef struct zmk_keycode_event_registry_item {
+    sys_snode_t node;
+    uint32_t keycode;
+    uint32_t event_count;
+} zmk_keycode_event_registry_item_t;
+
 ZMK_EVENT_DECLARE(zmk_keycode_state_changed);
 
-static inline struct zmk_keycode_state_changed_event *
-zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp) {
-    uint16_t page = ZMK_HID_USAGE_PAGE(encoded);
-    uint16_t id = ZMK_HID_USAGE_ID(encoded);
-    uint8_t implicit_modifiers = 0x00;
-    uint8_t explicit_modifiers = 0x00;
-
-    if (!page) {
-        page = HID_USAGE_KEY;
-    }
-
-    if (is_mod(page, id)) {
-        explicit_modifiers = SELECT_MODS(encoded);
-    } else {
-        implicit_modifiers = SELECT_MODS(encoded);
-    }
-
-    return new_zmk_keycode_state_changed(
-        (struct zmk_keycode_state_changed){.usage_page = page,
-                                           .keycode = id,
-                                           .implicit_modifiers = implicit_modifiers,
-                                           .explicit_modifiers = explicit_modifiers,
-                                           .state = pressed,
-                                           .timestamp = timestamp});
-}
+struct zmk_keycode_state_changed_event *
+zmk_keycode_state_changed_from_encoded(uint32_t encoded, bool pressed, int64_t timestamp);
