@@ -43,7 +43,7 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
 
     zmk_scancode_event_registry_item_t *event = NULL;
     SYS_SLIST_FOR_EACH_CONTAINER(&active_keypress_registry, event, node) {
-        if (event->position == position ) {
+        if (event->position == position) {
             event_found = true;
             if (pressed)
                 event->event_count++;
@@ -51,7 +51,7 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
                 event->event_count--;
             }
 
-            if(event->event_count == 0)
+            if (event->event_count == 0)
                 event_exhausted = true;
 
             break;
@@ -65,13 +65,13 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
 
     if (!event_found) {
         event = k_malloc(sizeof(zmk_scancode_event_registry_item_t));
-        memset (event, 0, sizeof(zmk_scancode_event_registry_item_t));
+        memset(event, 0, sizeof(zmk_scancode_event_registry_item_t));
         event->position = position;
         event->event_count = 1;
         sys_slist_append(&active_keypress_registry, &event->node);
     }
 
-    if (event_found && 
+    if (event_found &&
         !event_exhausted) { // send only first keypress and last release event of the same position
         LOG_INF("Merged key is already pressed. Consuming event"
             "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s", 
@@ -79,8 +79,8 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
         return true;
     }
 
-    LOG_DBG("Raising event for orig_position: %d, merged_position: %d, pressed: %s", orig_position, 
-        position, (pressed ? "true" : "false"));
+    LOG_DBG("Raising event for orig_position: %d, merged_position: %d, pressed: %s", orig_position,
+            position, (pressed ? "true" : "false"));
 
     return false;
 }
