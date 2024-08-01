@@ -9,14 +9,14 @@
 #ifdef ZMK_KEY_MERGER_NODE
 
 /* the key_merger node in the device tree is a list of (from,to) pairs that
- * represent a keys that we want to act like a single mechanical button.  
+ * represent a keys that we want to act like a single mechanical button.
  * You can also treat two merged keys like two keys connected electrically
  * in parallel.
  *
- * We do this by replacing key index using from->to rule and counting 
- * keypress/release events of resulting "to" key. Only first keypress and 
+ * We do this by replacing key index using from->to rule and counting
+ * keypress/release events of resulting "to" key. Only first keypress and
  * last key release of the pair is sent to listeners.
- * We want to be able to detect and skip the condition when keys not assigned 
+ * We want to be able to detect and skip the condition when keys not assigned
  * to merger is pressed and pass events from it as is.
  */
 
@@ -77,7 +77,7 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
         return false; // Skip list manipulation for unrelated keys
 
     LOG_INF("Orig_position: %d, merged_position: %d, pressed: %s", orig_position, position,
-                (pressed ? "true" : "false"));
+            (pressed ? "true" : "false"));
 
     bool event_found = false;
     bool event_exhausted = false;
