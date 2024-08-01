@@ -33,8 +33,8 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
 
 	//tbd: add merge keys config instead hardcoded values
 
-    if(position == 56)
-        position = 51; //merge spaces between both sides
+    if(position == 42)
+        position = 39; //merge spaces between both sides
 
     LOG_INF("Orig_position: %d, merged_position: %d, pressed: %s", orig_position, position, 
             (pressed ? "true" : "false"));
