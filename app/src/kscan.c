@@ -62,7 +62,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
         //tbd: add merge keys config instead hardcoded values
 
         if(position == 56)
-            position = 53; //42 is merged to 39 matrix position
+            position = 51; //merge spaces between both sides
 
         LOG_INF("Row: %d, col: %d, orig_position: %d, merged_position: %d, pressed: %s", ev.row, ev.column, orig_position, position, 
                 (pressed ? "true" : "false"));
