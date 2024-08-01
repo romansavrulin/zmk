@@ -14,6 +14,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include <zmk/matrix_transform.h>
 #include <zmk/event_manager.h>
+#include <zmk/key_merger.h>
 #include <zmk/events/position_state_changed.h>
 
 #define ZMK_KSCAN_EVENT_STATE_PRESSED 0
@@ -57,6 +58,10 @@ void zmk_kscan_process_msgq(struct k_work *item) {
 
         LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));
+
+        if (zmk_key_merger_consume_event(position, pressed))
+            continue;
+
         ZMK_EVENT_RAISE(new_zmk_position_state_changed(
             (struct zmk_position_state_changed){.source = ZMK_POSITION_STATE_CHANGE_SOURCE_LOCAL,
                                                 .state = pressed,

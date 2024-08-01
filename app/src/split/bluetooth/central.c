@@ -28,6 +28,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
 #include <zmk/hid_indicators_types.h>
+#include <zmk/key_merger.h>
 
 static int start_scanning(void);
 
@@ -66,6 +67,10 @@ K_MSGQ_DEFINE(peripheral_event_msgq, sizeof(struct zmk_position_state_changed),
 void peripheral_event_work_callback(struct k_work *work) {
     struct zmk_position_state_changed ev;
     while (k_msgq_get(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0) {
+
+        if (zmk_key_merger_consume_event(ev.position, ev.state))
+            continue;
+
         LOG_DBG("Trigger key position state change for %d", ev.position);
         ZMK_EVENT_RAISE(new_zmk_position_state_changed(ev));
     }
