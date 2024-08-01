@@ -61,8 +61,8 @@ void zmk_kscan_process_msgq(struct k_work *item) {
 
         //tbd: add merge keys config instead hardcoded values
 
-        if(position == 54)
-            position = 51; //42 is merged to 39 matrix position
+        if(position == 56)
+            position = 53; //42 is merged to 39 matrix position
 
         LOG_INF("Row: %d, col: %d, orig_position: %d, merged_position: %d, pressed: %s", ev.row, ev.column, orig_position, position, 
                 (pressed ? "true" : "false"));
