@@ -1,0 +1,9 @@
+description: |
+  Defines a merging rule for a set of key's physical positions
+
+compatible: "zmk,key-merger"
+
+properties:
+  map:
+    type: array
+    required: true
