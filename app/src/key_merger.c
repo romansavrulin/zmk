@@ -74,7 +74,7 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
     if (event_found &&
         !event_exhausted) { // send only first keypress and last release event of the same position
         LOG_INF("Merged key is already pressed. Consuming event"
-            "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s", 
+            "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s",
             orig_position, position, event->event_count, (pressed ? "true" : "false"));
         return true;
     }
