@@ -49,11 +49,12 @@ static uint32_t transform[] = DT_PROP(ZMK_KEY_MERGER_NODE, map);
 
 #endif /* ZMK_KEY_MERGER_NODE */
 
-bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
+bool zmk_key_merger_consume_event(uint32_t *event_position, bool pressed) {
 #ifdef ZMK_KEY_MERGER_NODE
 
-    int32_t orig_position = position; // unmerged position
-    bool found = false;
+    int32_t orig_position = *event_position; // unmerged position
+    int32_t position = orig_position;
+    bool merge_found = false;
 
     if (ARRAY_SIZE(transform) == 0)
         return false;
@@ -64,19 +65,20 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
         uint32_t to = transform[i] & 0xFF;
 
         if (position == to)
-            found = true; // Event is related to configured merge key
+            merge_found = true; // Event is related to configured merge key
 
         if (position == from) {
             position = to;
-            found = true;
+            merge_found = true;
             LOG_INF("Merging key %d to %d", from, to);
         }
     }
 
-    if (!found)
+    if (!merge_found)
         return false; // Skip list manipulation for unrelated keys
 
-    LOG_INF("Orig_position: %d, merged_position: %d, pressed: %s", orig_position, position,
+    *event_position = position; // merge keys and manipulate original event
+    LOG_INF("Keys merged! Orig_position: %d, merged_position: %d, pressed: %s", orig_position, position,
             (pressed ? "true" : "false"));
 
     bool event_found = false;
@@ -104,7 +106,7 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
         k_free(event);
     }
 
-    if (!event_found) {
+    if (!event_found && pressed) { // store first event for keypress only
         event = k_malloc(sizeof(zmk_scancode_event_registry_item_t));
         memset(event, 0, sizeof(zmk_scancode_event_registry_item_t));
         event->position = position;
@@ -112,9 +114,17 @@ bool zmk_key_merger_consume_event(uint32_t position, bool pressed) {
         sys_slist_append(&active_keypress_registry, &event->node);
     }
 
+    if (!event_found && !pressed) { // pass strange events to the processing chain
+        LOG_WRN("Merged key is released, but no keypress event record fould. Passing event as is "
+                 "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s",
+                 orig_position, position, event->event_count, (pressed ? "true" : "false"));
+
+        return false;
+    }
+
     if (event_found &&
         !event_exhausted) { // send only first keypress and last release event of the same position
-        LOG_INF("Merged key is already pressed. Consuming event"
+        LOG_INF("Merged key is already pressed. Consuming event "
                 "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s",
                 orig_position, position, event->event_count, (pressed ? "true" : "false"));
         return true;

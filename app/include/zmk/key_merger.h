@@ -18,4 +18,4 @@
 
 #endif /* DT_HAS_CHOSEN(zmk_key_merger) */
 
-bool zmk_key_merger_consume_event(uint32_t position, bool pressed);
+bool zmk_key_merger_consume_event(uint32_t *event_position, bool pressed);

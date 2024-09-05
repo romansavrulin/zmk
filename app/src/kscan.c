@@ -59,7 +59,7 @@ void zmk_kscan_process_msgq(struct k_work *item) {
         LOG_DBG("Row: %d, col: %d, position: %d, pressed: %s", ev.row, ev.column, position,
                 (pressed ? "true" : "false"));
 
-        if (zmk_key_merger_consume_event(position, pressed))
+        if (zmk_key_merger_consume_event(&position, pressed))
             continue;
 
         ZMK_EVENT_RAISE(new_zmk_position_state_changed(
