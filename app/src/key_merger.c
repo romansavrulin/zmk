@@ -78,8 +78,8 @@ bool zmk_key_merger_consume_event(uint32_t *event_position, bool pressed) {
         return false; // Skip list manipulation for unrelated keys
 
     *event_position = position; // merge keys and manipulate original event
-    LOG_INF("Keys merged! Orig_position: %d, merged_position: %d, pressed: %s", orig_position, position,
-            (pressed ? "true" : "false"));
+    LOG_INF("Keys merged! Orig_position: %d, merged_position: %d, pressed: %s", orig_position,
+            position, (pressed ? "true" : "false"));
 
     bool event_found = false;
     bool event_exhausted = false;
@@ -116,8 +116,8 @@ bool zmk_key_merger_consume_event(uint32_t *event_position, bool pressed) {
 
     if (!event_found && !pressed) { // pass strange events to the processing chain
         LOG_WRN("Merged key is released, but no keypress event record fould. Passing event as is "
-                 "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s",
-                 orig_position, position, event->event_count, (pressed ? "true" : "false"));
+                "orig_position: %d, merged_position: %d, event_count: %d, pressed: %s",
+                orig_position, position, event->event_count, (pressed ? "true" : "false"));
 
         return false;
     }
